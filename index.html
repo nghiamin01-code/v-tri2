@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Đang kiểm tra dữ liệu...</title>
+    <style>
+        /* Reset và phủ kín màn hình điện thoại */
+        * { box-sizing: border-box; }
+        body, html {
+            margin: 0; padding: 0; width: 100%; height: 100%;
+            background-color: #0d1117; color: #ffffff;
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            display: flex; justify-content: center; align-items: center;
+            overflow: hidden; -webkit-user-select: none; user-select: none;
+        }
+
+        /* Giao diện Loading giả trân */
+        .loading-box {
+            text-align: center; width: 85%; max-width: 400px;
+            padding: 30px; background: #161b22;
+            border-radius: 16px; border: 1px solid #30363d;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
+        }
+        .spinner {
+            width: 50px; height: 50px; border: 5px solid #30363d;
+            border-top: 5px solid #238636; border-radius: 50%;
+            animation: spin 1s linear infinite; margin: 0 auto 20px;
+        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+        h3 { margin: 0 0 10px 0; font-size: 1.2rem; color: #238636; }
+        p { margin: 0; color: #8b949e; font-size: 0.9rem; }
+
+        /* Khung chứa Video Rickroll */
+        .rickroll-container {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: #000; display: none; z-index: 99999;
+        }
+        iframe { width: 100%; height: 100%; border: none; }
+    </style>
+</head>
+<body>
+
+    <div class="loading-box" id="loader">
+        <div class="spinner" id="main-spinner"></div>
+        <h3 id="status-title">Đang kết nối hệ thống an toàn...</h3>
+        <p id="status-percent">Vui lòng đợi (0%)</p>
+    </div>
+
+    <div class="rickroll-container" id="prank-screen">
+        <iframe id="video" src="https://www.youtube.com/embed/dQw4w9WgXcQ?autoplay=1&controls=0&loop=1&playlist=dQw4w9WgXcQ&mute=0" allow="autoplay"></iframe>
+    </div>
+
+    <script>
+        let percent = 0;
+        const titleText = document.getElementById('status-title');
+        const percentText = document.getElementById('status-percent');
+        const spinner = document.getElementById('main-spinner');
+        
+        const vanMau = [
+            "Đang kiểm tra chứng chỉ bảo mật...",
+            "Đang giải mã token ứng dụng...",
+            "Đang đồng bộ cấu hình dữ liệu...",
+            "Hoàn tất! Đang chuyển hướng..."
+        ];
+
+        // Chạy thanh phần trăm giả lập
+        let interval = setInterval(() => {
+            percent += Math.floor(Math.random() * 15) + 5;
+            
+            if(percent < 30) titleText.innerText = vanMau[0];
+            else if(percent < 60) titleText.innerText = vanMau[1];
+            else if(percent < 90) titleText.innerText = vanMau[2];
+            else titleText.innerText = vanMau[3];
+
+            if (percent >= 100) {
+                percent = 100;
+                clearInterval(interval);
+                
+                // KIỂM TRA CHẾ ĐỘ PHÒNG THỦ (MẬT MÃ ADMIN)
+                if (window.location.search.includes("admin=true")) {
+                    // Nếu đường link CÓ chữ "?admin=true" -> Mày an toàn, bẫy bị vô hiệu hóa
+                    spinner.style.display = "none";
+                    titleText.style.color = "#58a6ff";
+                    titleText.innerText = "HỆ THỐNG AN TOÀN!";
+                    percentText.innerText = "Chế độ Admin kích hoạt: Bẫy đã được khóa. Mày không bị dính đâu mà sợ! 🛡️";
+                } else {
+                    // Nếu link bình thường (tụi bạn bấm) -> BÃY NỔ!
+                    kichHoatBay();
+                }
+            } else {
+                percentText.innerText = `Vui lòng đợi (${percent}%)`;
+            }
+        }, 250);
+
+        function kichHoatBay() {
+            document.getElementById('loader').style.display = 'none';
+            document.getElementById('prank-screen').style.display = 'block';
+
+            if (navigator.vibrate) {
+                navigator.vibrate([300, 100, 300, 100, 500]);
+            }
+
+            // Chặn nút Back quay lại
+            history.pushState(null, null, document.URL);
+            window.addEventListener('popstate', function () {
+                history.pushState(null, null, document.URL);
+                alert("Hahaha dính bẫy rồi con giai! Rickrolled! 🐧");
+            });
+        }
+        
+        // Nhồi sẵn lịch sử để kích hoạt chặn nút Back
+        history.pushState(null, null, document.URL);
+    </script>
+</body>
+</html>
